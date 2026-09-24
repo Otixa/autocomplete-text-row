@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.1](https://github.com/Otixa/autocomplete-text-row/compare/v1.0.0...v1.0.1) (2026-09-24)
+
+### Fixed
+
+- The field now matches Home Assistant's own text inputs (2026.x): 56px tall, flush against the icon column, 16px inset, smaller label, and the form background, hover and underline colours from the theme (`--ha-color-form-background`, `--ha-color-form-background-hover`, `--ha-color-border-neutral-loud`). Older frontends fall back to the previous variables. Before, the row sat about 10px to the right of neighbouring rows and could show a different background.
+
 ## [1.0.0](https://github.com/Otixa/autocomplete-text-row/releases/tag/v1.0.0) (2026-09-24)
 
 Initial release.

@@ -61,7 +61,7 @@ HACS registers the dashboard resource automatically.
 
 ```yaml
 resources:
-  - url: /local/autocomplete-text-row.js?v=1.0.0
+  - url: /local/autocomplete-text-row.js?v=1.0.1
     type: module
 ```
 
@@ -161,9 +161,12 @@ The row reads these standard theme variables:
 | `--primary-color`               | Focus underline, label, highlights, tick  |
 | `--primary-text-color`          | Field and option text                     |
 | `--secondary-text-color`        | Label, placeholder, buttons               |
-| `--secondary-background-color`  | Field background fallback, button hover   |
-| `--input-fill-color`            | Field background                          |
-| `--input-idle-line-color`       | Field underline                           |
+| `--ha-color-form-background`    | Field background                          |
+| `--ha-color-form-background-hover` | Field background on hover              |
+| `--ha-color-border-neutral-loud` | Field underline                          |
+| `--input-fill-color`            | Field background on older frontends       |
+| `--input-idle-line-color`       | Field underline on older frontends        |
+| `--secondary-background-color`  | Last-resort field background, button hover |
 | `--card-background-color`       | List background                           |
 | `--divider-color`               | List border                               |
 | `--state-icon-color`            | Row icon                                  |

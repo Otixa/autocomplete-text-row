@@ -11,7 +11,7 @@
 //
 // https://github.com/Otixa/autocomplete-text-row
 
-export const VERSION = "1.0.0";
+export const VERSION = "1.0.1";
 
 // Lower-cased with diacritics removed, so "creme" finds "Crème".
 export const normalise = (s) =>
@@ -120,30 +120,39 @@ export function listItems(options, query) {
 }
 
 const STYLE = `
-  :host { display: block; }
-  .row { display: flex; align-items: flex-start; gap: 16px; }
+  :host { display: block; padding: 4px 0 12px; }
+  .row { display: flex; align-items: flex-start; }
   .row > ha-icon { color: var(--state-icon-color, var(--paper-item-icon-color)); flex: none;
-                   width: 40px; display: flex; justify-content: center; padding-top: 14px; }
+                   width: 40px; height: 56px; display: flex; align-items: center;
+                   justify-content: center; --mdc-icon-size: 20px; }
   .field ha-icon { --mdc-icon-size: 20px; }
   .main { flex: 1; min-width: 0; }
-  .field { position: relative; display: flex; align-items: center;
-           background: var(--input-fill-color, var(--secondary-background-color));
-           border-radius: 4px 4px 0 0;
-           border-bottom: 1px solid var(--input-idle-line-color, var(--secondary-text-color));
-           padding: 6px 4px 4px 12px; cursor: text; }
-  .field.focused { border-bottom: 2px solid var(--primary-color); padding-bottom: 3px; }
+  .field { position: relative; display: flex; align-items: center; box-sizing: border-box;
+           height: 56px; padding: 0 4px 0 16px; border-radius: 4px 4px 0 0; cursor: text;
+           background: var(--ha-color-form-background, var(--mdc-text-field-fill-color,
+                       var(--input-fill-color, var(--secondary-background-color)))); }
+  .field:hover { background: var(--ha-color-form-background-hover, var(--ha-color-form-background,
+                             var(--mdc-text-field-fill-color, var(--input-fill-color,
+                             var(--secondary-background-color))))); }
+  .field::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+                  pointer-events: none;
+                  background: var(--ha-color-border-neutral-loud, var(--input-idle-line-color,
+                              var(--secondary-text-color))); }
+  .field.focused::after { height: 2px; background: var(--primary-color); }
   .field.disabled { opacity: 0.5; cursor: default; }
   .text { flex: 1; min-width: 0; }
-  label { display: block; font-size: 12px; line-height: 16px; color: var(--secondary-text-color); }
+  label { display: block; font-size: var(--ha-font-size-xs, 10px); line-height: 12px;
+          color: var(--secondary-text-color); }
   .field.focused label { color: var(--primary-color); }
-  input { all: unset; display: block; width: 100%; font: inherit; font-size: 16px;
-          line-height: 24px; color: var(--primary-text-color); }
+  input { all: unset; display: block; width: 100%; font: inherit;
+          font-size: var(--ha-font-size-m, 14px); line-height: 20px;
+          color: var(--primary-text-color); }
   input::placeholder { color: var(--secondary-text-color); opacity: 0.7; }
   button { all: unset; cursor: pointer; display: flex; padding: 8px; border-radius: 50%;
            color: var(--secondary-text-color); }
   button:hover { background: var(--secondary-background-color); }
   button[hidden] { display: none; }
-  ul { list-style: none; margin: 4px 0 8px; padding: 4px 0; max-height: 240px; overflow-y: auto;
+  ul { list-style: none; margin: 4px 0 0; padding: 4px 0; max-height: 240px; overflow-y: auto;
        background: var(--card-background-color, var(--ha-card-background));
        border: 1px solid var(--divider-color); border-radius: 8px;
        box-shadow: 0 4px 12px rgba(0,0,0,.25); }
