@@ -1,0 +1,63 @@
+name: Release
+
+# Push a tag like v1.0.0 to publish. The tag, package.json and the VERSION
+# constant in the row must all agree, or nothing is released.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validate tag is semver
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if ! [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid release tag '$GITHUB_REF_NAME'. Expected v<major>.<minor>.<patch>."
+            exit 1
+          fi
+
+      - name: Check versions agree
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          card=$(sed -n 's/^export const VERSION = "\(.*\)";$/\1/p' autocomplete-text-row.js)
+          pkg=$(node -p "require('./package.json').version")
+          echo "tag=$tag card=$card package.json=$pkg"
+          [ "$tag" = "$card" ] || { echo "VERSION in autocomplete-text-row.js is '$card'"; exit 1; }
+          [ "$tag" = "$pkg" ] || { echo "version in package.json is '$pkg'"; exit 1; }
+
+      - run: npm run check
+      - run: npm test
+
+      - name: Extract release notes
+        run: |
+          # The CHANGELOG.md section headed "## [<version>](...)" or "## <version>",
+          # up to the next "## ". Plain string comparison, so the dots in the
+          # version aren't regex.
+          v="${GITHUB_REF_NAME#v}"
+          awk -v a="## [$v]" -v b="## $v" '
+            index($0, a) == 1 || $0 == b || index($0, b " ") == 1 { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          grep -q '[^[:space:]]' notes.md || { echo "No CHANGELOG.md entry for $v"; exit 1; }
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prerelease=""
+          [[ "$GITHUB_REF_NAME" == *-* ]] && prerelease="--prerelease"
+          gh release create "$GITHUB_REF_NAME" autocomplete-text-row.js \
+            --title "$GITHUB_REF_NAME" --notes-file notes.md $prerelease

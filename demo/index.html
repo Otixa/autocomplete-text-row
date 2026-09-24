@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Home Assistant default dark theme values */
+  :root {
+    --primary-color: #03a9f4;
+    --primary-text-color: #e1e1e1;
+    --secondary-text-color: #9b9b9b;
+    --primary-background-color: #111111;
+    --secondary-background-color: #282828;
+    --card-background-color: #1c1c1c;
+    --divider-color: rgba(225, 225, 225, 0.12);
+    --state-icon-color: #44739e;
+    --input-fill-color: rgba(255, 255, 255, 0.05);
+    --input-idle-line-color: rgba(255, 255, 255, 0.42);
+    --error-color: #db4437;
+  }
+  html, body { margin: 0; background: var(--primary-background-color); }
+  body { font-family: Roboto, sans-serif; font-size: 14px; padding: 16px; width: 420px; }
+  ha-card { display: block; background: var(--card-background-color); border-radius: 12px;
+            border: 1px solid var(--divider-color); color: var(--primary-text-color); }
+  .header { font-size: 24px; padding: 20px 16px 12px; letter-spacing: -0.012em; }
+  .content { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+</style>
+<script type="module">
+  import * as mdi from "https://cdn.jsdelivr.net/npm/@mdi/js@7/mdi.js";
+
+  // Minimal stand-in for Home Assistant's <ha-icon>.
+  customElements.define("ha-icon", class extends HTMLElement {
+    static observedAttributes = ["icon"];
+    attributeChangedCallback(_, __, v) { this.icon = v; }
+    set icon(v) {
+      const key = "mdi" + v.replace(/^mdi:/, "").split("-").map((p) => p[0].toUpperCase() + p.slice(1)).join("");
+      const size = "var(--mdc-icon-size, 24px)";
+      this.innerHTML = `<svg viewBox="0 0 24 24" style="width:${size};height:${size};display:block;fill:currentColor"><path d="${mdi[key] || ""}"/></svg>`;
+    }
+  });
+
+  await import("../autocomplete-text-row.js");
+
+  const text = (id, name, icon, state) => ({
+    [id]: { entity_id: id, state, attributes: { friendly_name: name, icon, min: 0, max: 100 } },
+  });
+  const hass = {
+    states: {
+      ...text("input_text.tea_brand", "Brand", "mdi:label", "Clipper"),
+      ...text("input_text.tea_blend", "Blend", "mdi:tea", "Earl Grey"),
+      ...text("input_text.tea_note", "Note", "mdi:note-text-outline", ""),
+      "sensor.tea_library": {
+        entity_id: "sensor.tea_library",
+        state: "8",
+        attributes: {
+          brands: ["Clipper", "Dilmah", "Harney & Sons", "Pukka", "Taylors of Harrogate",
+                   "Tetley", "Twinings", "Yorkshire"],
+        },
+      },
+    },
+    // Stands in for input_text.set_value, so picks and new values stick.
+    callService(domain, service, data) {
+      const s = this.states[data.entity_id];
+      this.states = { ...this.states, [data.entity_id]: { ...s, state: data.value } };
+      rows.forEach((row) => (row.hass = this));
+      return Promise.resolve();
+    },
+  };
+
+  const content = document.querySelector(".content");
+  const rows = [
+    { entity: "input_text.tea_brand", options_entity: "sensor.tea_library", options_attribute: "brands" },
+    { entity: "input_text.tea_blend", options: ["Assam", "Darjeeling", "Earl Grey", "English Breakfast", "Sencha"] },
+    { entity: "input_text.tea_note", placeholder: "Anything you like" },
+  ].map((config) => {
+    const row = document.createElement("autocomplete-text-row");
+    row.setConfig(config);
+    content.append(row);
+    row.hass = hass;
+    return row;
+  });
+
+  if (new URLSearchParams(location.search).get("state") === "open") {
+    const brand = rows[0];
+    const input = brand.shadowRoot.querySelector("input");
+    input.focus();
+    brand._onFocus();
+    input.value = "har";
+    input.dispatchEvent(new Event("input"));
+  }
+  await document.fonts.ready;
+  document.body.dataset.ready = "1";
+</script>
+</head>
+<body>
+  <ha-card>
+    <div class="header">New tea</div>
+    <div class="content"></div>
+  </ha-card>
+</body>
+</html>

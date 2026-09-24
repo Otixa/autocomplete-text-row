@@ -1,0 +1,71 @@
+name: Bug report
+description: Report a problem with Autocomplete Text Row.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before reporting, update to the latest release and hard-reload the browser (`Ctrl+Shift+R` / `Cmd+Shift+R`). Many display problems are caused by a cached copy of an older version.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I am using the latest release of Autocomplete Text Row.
+          required: true
+        - label: I have cleared the browser cache or hard-reloaded the page.
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: Autocomplete Text Row version
+      description: Shown in the browser console as `autocomplete-text-row <version>`.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      placeholder: 2026.9.0
+    validations:
+      required: true
+  - type: input
+    id: last-working
+    attributes:
+      label: Last working version (if known)
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and operating system
+      description: Include the Home Assistant companion app version if applicable.
+      placeholder: Chrome 140 on Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened, and what did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the dashboard
+        2. Type "..." into the row
+        3. ...
+  - type: textarea
+    id: config
+    attributes:
+      label: Row configuration
+      description: The YAML for the affected row, and the suggestions it offers if relevant.
+      render: yaml
+  - type: textarea
+    id: console
+    attributes:
+      label: Browser console errors
+      description: Any errors from the browser developer tools console.
+      render: text
