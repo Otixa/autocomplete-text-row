@@ -43,15 +43,19 @@ Looking for a searchable picker that only allows existing options? See [Searchab
 
 ### HACS (recommended)
 
-The row is not yet in the default HACS store. Add it as a custom repository:
+The row is in the default HACS store.
 
 1. Open HACS in Home Assistant.
-2. Open the menu (⋮) → **Custom repositories**.
-3. Enter `https://github.com/Otixa/autocomplete-text-row`, select type **Dashboard**, and click **Add**.
-4. Search for **Autocomplete Text Row** and click **Download**.
-5. Reload the browser.
+2. Search for **Autocomplete Text Row** and click **Download**.
+3. Reload the browser.
 
 HACS registers the dashboard resource automatically.
+
+If the search finds nothing (HACS can take a few hours to pick up store changes), add the row as a custom repository instead:
+
+1. In HACS, open the menu (⋮) → **Custom repositories**.
+2. Enter `https://github.com/Otixa/autocomplete-text-row`, select type **Dashboard**, and click **Add**.
+3. Search again, then continue from step 2 above.
 
 ### Manual
 
@@ -61,7 +65,7 @@ HACS registers the dashboard resource automatically.
 
 ```yaml
 resources:
-  - url: /local/autocomplete-text-row.js?v=1.0.1
+  - url: /local/autocomplete-text-row.js?v=1.0.2
     type: module
 ```
 
@@ -262,7 +266,7 @@ Released under the [MIT License](LICENSE).
 [releases-shield]: https://img.shields.io/github/release/Otixa/autocomplete-text-row.svg?style=for-the-badge
 [releases]: https://github.com/Otixa/autocomplete-text-row/releases
 [license-shield]: https://img.shields.io/github/license/Otixa/autocomplete-text-row.svg?style=for-the-badge
-[hacs-shield]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
+[hacs-shield]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge
 [hacs]: https://hacs.xyz
 [validate-shield]: https://img.shields.io/github/actions/workflow/status/Otixa/autocomplete-text-row/validate.yml?branch=main&style=for-the-badge&label=validate
 [validate]: https://github.com/Otixa/autocomplete-text-row/actions/workflows/validate.yml

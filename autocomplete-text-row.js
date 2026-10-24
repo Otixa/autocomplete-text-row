@@ -11,7 +11,7 @@
 //
 // https://github.com/Otixa/autocomplete-text-row
 
-export const VERSION = "1.0.1";
+export const VERSION = "1.0.2";
 
 // Lower-cased with diacritics removed, so "creme" finds "Crème".
 export const normalise = (s) =>
